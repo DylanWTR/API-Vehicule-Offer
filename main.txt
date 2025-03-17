@@ -1,0 +1,156 @@
+from fastapi import FastAPI
+from typing import List
+
+app = FastAPI()
+
+# Données fictives
+
+marques = [
+    {"id": 1, "nom": "Toyota"},
+    {"id": 2, "nom": "Honda"},
+    {"id": 3, "nom": "Ford"},
+    # {"id": 4, "nom": "BMW"},
+    # {"id": 5, "nom": "Mercedes"}
+]
+
+modeles = {
+    1: [{"id": 101, "nom": "Corolla"}, {"id": 102, "nom": "Camry"}, {"id": 103, "nom": "Yaris"}],
+    2: [{"id": 201, "nom": "Civic"}, {"id": 202, "nom": "Accord"}, {"id": 203, "nom": "CR-V"}],
+    3: [{"id": 301, "nom": "Mustang"}, {"id": 302, "nom": "F-150"}, {"id": 303, "nom": "Explorer"}],
+    # 4: [{"id": 401, "nom": "Série 3"}, {"id": 402, "nom": "Série 5"}, {"id": 403, "nom": "X5"}],
+    # 5: [{"id": 501, "nom": "Classe A"}, {"id": 502, "nom": "Classe C"}, {"id": 503, "nom": "Classe E"}]
+}
+
+offres = {
+    101: [
+        {"id": 1001, "prix": 18000, "annee": 2020, "km": 25000, "transmission": "Automatique",
+        "image_url": "https://i.imgur.com/cfgr1SW.png", "vendeur": {"nom": "Mathieu Juneau", "courriel": "johndoe@ulaval.ca", "proprietaire": False}},
+        {"id": 1002, "prix": 15000, "annee": 2019, "km": 40000, "transmission": "Manuel",
+        "image_url": "https://i.imgur.com/lkwNmtF.png", "vendeur": {"nom": "Jean Dupont", "courriel": "jeandupont@gmail.com", "proprietaire": True}}
+    ],
+    102: [
+        {"id": 1003, "prix": 20000, "annee": 2021, "km": 22000, "transmission": "Automatique",
+        "image_url": "https://i.imgur.com/fdGEVeP.png", "vendeur": {"nom": "Sophie Tremblay", "courriel": "sophie.t@outlook.com", "proprietaire": False}},
+        {"id": 1004, "prix": 17000, "annee": 2018, "km": 50000, "transmission": "Manuel",
+        "image_url": "https://i.imgur.com/7DUAztT.png", "vendeur": {"nom": "Marc Lavoie", "courriel": "marc.lavoie@gmail.com", "proprietaire": True}}
+    ],
+    103: [
+        {"id": 1005, "prix": 16000, "annee": 2019, "km": 30000, "transmission": "Automatique",
+        "image_url": "https://i.imgur.com/abcd123.png", "vendeur": {"nom": "Julie Moreau", "courriel": "julie.moreau@ymail.com", "proprietaire": False}},
+        {"id": 1006, "prix": 14000, "annee": 2017, "km": 60000, "transmission": "Manuel",
+        "image_url": "https://i.imgur.com/efgh456.png", "vendeur": {"nom": "Alexandre Girard", "courriel": "alex.girard@protonmail.com", "proprietaire": True}}
+    ],
+
+
+    201: [
+        {"id": 2001, "prix": 22000, "annee": 2021, "km": 15000, "transmission": "Automatique",
+         "image_url": "https://i.imgur.com/y2cb5us.png", "vendeur": {"nom": "David Gagnon", "courriel": "david.gagnon@gmail.com", "proprietaire": False}},
+        {"id": 2002, "prix": 19000, "annee": 2020, "km": 35000, "transmission": "Manuel",
+         "image_url": "https://i.imgur.com/pHbsklU.png", "vendeur": {"nom": "Isabelle Tremblay", "courriel": "isabelle.tremblay@hotmail.com", "proprietaire": True}}
+    ],
+    202: [
+        {"id": 2003, "prix": 25000, "annee": 2022, "km": 10000, "transmission": "Automatique",
+         "image_url": "https://i.imgur.com/g35mQoG.png", "vendeur": {"nom": "Éric Lavoie", "courriel": "eric.lavoie@yahoo.com", "proprietaire": False}},
+        {"id": 2004, "prix": 21000, "annee": 2020, "km": 28000, "transmission": "Manuel",
+         "image_url": "https://i.imgur.com/ge1uQCb.png", "vendeur": {"nom": "Sophie Bernard", "courriel": "sophie.bernard@protonmail.com", "proprietaire": True}}
+    ],
+    203: [
+        {"id": 2005, "prix": 23000, "annee": 2021, "km": 18000, "transmission": "Automatique",
+         "image_url": "https://i.imgur.com/71xxCub.png", "vendeur": {"nom": "Marc Bouchard", "courriel": "marc.bouchard@gmail.com", "proprietaire": False}},
+        {"id": 2006, "prix": 20000, "annee": 2019, "km": 40000, "transmission": "Manuel",
+         "image_url": "https://i.imgur.com/C47yjnU.png", "vendeur": {"nom": "Julie Fortin", "courriel": "julie.fortin@outlook.com", "proprietaire": True}}
+    ],
+
+
+    301: [
+        {"id": 3001, "prix": 30000, "annee": 2022, "km": 10000, "transmission": "Automatique",
+         "image_url": "https://i.imgur.com/YEEiPyh.png", "vendeur": {"nom": "Paul Lefebvre", "courriel": "paul.lefebvre@gmail.com", "proprietaire": False}},
+        {"id": 3002, "prix": 27000, "annee": 2020, "km": 20000, "transmission": "Manuel",
+         "image_url": "https://i.imgur.com/rwtOoA6.png", "vendeur": {"nom": "Nathalie Roy", "courriel": "nathalie.roy@hotmail.com", "proprietaire": True}}
+    ],
+    302: [
+        {"id": 3003, "prix": 35000, "annee": 2023, "km": 5000, "transmission": "Automatique",
+         "image_url": "https://i.imgur.com/xTtChVR.png", "vendeur": {"nom": "Jean-François Pelletier", "courriel": "jf.pelletier@yahoo.com", "proprietaire": False}},
+        {"id": 3004, "prix": 31000, "annee": 2021, "km": 15000, "transmission": "Manuel",
+         "image_url": "https://i.imgur.com/iWsWvHn.png", "vendeur": {"nom": "Karine Gauthier", "courriel": "karine.gauthier@protonmail.com", "proprietaire": True}}
+    ],
+    303: [
+        {"id": 3005, "prix": 32000, "annee": 2022, "km": 12000, "transmission": "Automatique",
+         "image_url": "https://i.imgur.com/NkkhMed.png", "vendeur": {"nom": "Olivier Tremblay", "courriel": "olivier.tremblay@gmail.com", "proprietaire": False}},
+        {"id": 3006, "prix": 29000, "annee": 2020, "km": 30000, "transmission": "Manuel",
+         "image_url": "https://i.imgur.com/nFhJVcA.png", "vendeur": {"nom": "Catherine Lavoie", "courriel": "catherine.lavoie@outlook.com", "proprietaire": True}}
+    ],
+
+
+    # 401: [
+    #     {"id": 4001, "prix": 35000, "annee": 2022, "km": 5000, "transmission": "Automatique",
+    #      "image_url": "https://i.imgur.com/LRuZQZn.png", "vendeur": {"nom": "François Dubois", "courriel": "francois.dubois@gmail.com", "proprietaire": False}},
+    #     {"id": 4002, "prix": 33000, "annee": 2021, "km": 12000, "transmission": "Manuel",
+    #      "image_url": "https://i.imgur.com/iQhgy4o.png", "vendeur": {"nom": "Marianne Fortier", "courriel": "marianne.fortier@hotmail.com", "proprietaire": True}}
+    # ],
+    # 402: [
+    #     {"id": 4003, "prix": 37000, "annee": 2023, "km": 3000, "transmission": "Automatique",
+    #      "image_url": "", "vendeur": {"nom": "Sébastien Lemieux", "courriel": "seb.lemieux@yahoo.com", "proprietaire": False}},
+    #     {"id": 4004, "prix": 34000, "annee": 2021, "km": 17000, "transmission": "Manuel",
+    #      "image_url": "", "vendeur": {"nom": "Audrey Beaulieu", "courriel": "audrey.beaulieu@protonmail.com", "proprietaire": True}}
+    # ],
+    # 403: [
+    #     {"id": 4005, "prix": 39000, "annee": 2022, "km": 8000, "transmission": "Automatique",
+    #      "image_url": "", "vendeur": {"nom": "Maxime Gagnon", "courriel": "maxime.gagnon@gmail.com", "proprietaire": False}},
+    #     {"id": 4006, "prix": 36000, "annee": 2020, "km": 25000, "transmission": "Manuel",
+    #      "image_url": "", "vendeur": {"nom": "Isabelle Bouchard", "courriel": "isabelle.bouchard@outlook.com", "proprietaire": True}}
+    # ],
+
+
+    # 501: [
+    #     {"id": 5001, "prix": 40000, "annee": 2023, "km": 2000, "transmission": "Automatique",
+    #      "image_url": "", "vendeur": {"nom": "Louis Moreau", "courriel": "louis.moreau@gmail.com", "proprietaire": False}},
+    #     {"id": 5002, "prix": 37000, "annee": 2022, "km": 8000, "transmission": "Manuel",
+    #      "image_url": "", "vendeur": {"nom": "Chloé Desrochers", "courriel": "chloe.desrochers@hotmail.com", "proprietaire": True}}
+    # ],
+    # 502: [
+    #     {"id": 5003, "prix": 42000, "annee": 2023, "km": 5000, "transmission": "Automatique",
+    #      "image_url": "", "vendeur": {"nom": "Julien Tremblay", "courriel": "julien.tremblay@yahoo.com", "proprietaire": False}},
+    #     {"id": 5004, "prix": 39000, "annee": 2021, "km": 10000, "transmission": "Manuel",
+    #      "image_url": "", "vendeur": {"nom": "Émilie Gauthier", "courriel": "emilie.gauthier@protonmail.com", "proprietaire": True}}
+    # ],
+    # 503: [
+    #     {"id": 5005, "prix": 45000, "annee": 2022, "km": 3000, "transmission": "Automatique",
+    #      "image_url": "", "vendeur": {"nom": "Alexis Lavoie", "courriel": "alexis.lavoie@gmail.com", "proprietaire": False}},
+    #     {"id": 5006, "prix": 42000, "annee": 2020, "km": 15000, "transmission": "Manuel",
+    #      "image_url": "", "vendeur": {"nom": "Sophie Bernard", "courriel": "sophie.bernard@outlook.com", "proprietaire": True}}
+    # ]
+}
+
+# Routes API
+
+@app.get("/marques")
+def get_marques():
+    return marques
+
+@app.get("/marques/{marque_id}/modeles")
+def get_modeles(marque_id: int):
+    return modeles.get(marque_id, [])
+
+@app.get("/modeles/{modele_id}/offres")
+def get_offres(modele_id: int):
+    modeles_list = {m["id"]: m["nom"] for marque in modeles.values() for m in marque}
+    modele_nom = modeles_list.get(modele_id, "Modèle inconnu")
+
+    offres_list = offres.get(modele_id, [])
+    for offre in offres_list:
+        offre["modele_nom"] = modele_nom
+
+    return offres_list
+
+@app.get("/offres/{offre_id}")
+def get_offre_detail(offre_id: int):
+    modeles_list = {m["id"]: m["nom"] for marque in modeles.values() for m in marque}
+
+    for modele_id, modele_offres in offres.items():
+        for offre in modele_offres:
+            if offre["id"] == offre_id:
+                offre["modele_nom"] = modeles_list.get(modele_id, "Modèle inconnu")
+                return offre
+
+    return {"message": "Offre non trouvée"}
