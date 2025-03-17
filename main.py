@@ -49,3 +49,7 @@ async def get_modeles(marque: str):
     if not modeles:
         raise HTTPException(status_code=404, detail="Aucun modèle trouvé pour cette marque")
     return modeles
+
+@app.get("/")
+async def root():
+    return {"message": "API is running!"}
